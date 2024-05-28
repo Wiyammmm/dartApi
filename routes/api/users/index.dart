@@ -32,39 +32,44 @@ Future<Response> _getLists(RequestContext context) async {
 }
 
 Future<Response> _createList(RequestContext context) async {
-  final body = await context.request.json() as Map<String, dynamic>;
-  final email = body['email'] as String;
-  if (!validator.isValidEmail(email)) {
+  try {
+    final body = await context.request.json() as Map<String, dynamic>;
+    final email = body['email'] as String;
+    if (!validator.isValidEmail(email)) {
+      return Response.json(body: {
+        'messages': {'code': 1, 'message': 'Invalid Email'},
+      });
+    }
+
+    final checkEmail =
+        await context.read<Db>().collection('users').findOne({'email': email});
+
+    if (checkEmail != null) {
+      return Response.json(body: {
+        'messages': {'code': 1, 'message': 'This email is Already exist'},
+      });
+    }
+    final password = body['password'] as String;
+    if (!validator.isValidPassword(password)) {
+      return Response.json(body: {
+        'messages': {'code': 1, 'message': 'Invalid Format Password'},
+      });
+    }
+    final hashed = BCrypt.hashpw(password, BCrypt.gensalt());
+
+    final list = <String, dynamic>{'email': email, 'password': hashed};
+
+    final result = await context.read<Db>().collection('users').insertOne(list);
+    // return Response.json(body: {'result': result.document});
     return Response.json(body: {
-      'messages': {'code': 1, 'message': 'Invalid Email'},
+      'messages': {
+        'code': 0,
+        'message': 'OK',
+      },
+      'result': result.document
     });
+  } catch (e) {
+    print(e);
+    return Response(statusCode: HttpStatus.badRequest);
   }
-
-  final checkEmail =
-      await context.read<Db>().collection('users').findOne({'email': email});
-
-  if (checkEmail != null) {
-    return Response.json(body: {
-      'messages': {'code': 1, 'message': 'This email is Already exist'},
-    });
-  }
-  final password = body['password'] as String;
-  if (!validator.isValidPassword(password)) {
-    return Response.json(body: {
-      'messages': {'code': 1, 'message': 'Invalid Format Password'},
-    });
-  }
-  final hashed = BCrypt.hashpw(password, BCrypt.gensalt());
-
-  final list = <String, dynamic>{'email': email, 'password': hashed};
-
-  final result = await context.read<Db>().collection('users').insertOne(list);
-  // return Response.json(body: {'result': result.document});
-  return Response.json(body: {
-    'messages': {
-      'code': 0,
-      'message': 'OK',
-    },
-    'result': result.document
-  });
 }
