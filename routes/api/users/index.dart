@@ -35,6 +35,7 @@ Future<Response> _createList(RequestContext context) async {
   try {
     final body = await context.request.json() as Map<String, dynamic>;
     final email = body['email'] as String;
+    final password = body['password'] as String;
     if (!validator.isValidEmail(email)) {
       return Response.json(body: {
         'messages': {'code': 1, 'message': 'Invalid Email'},
@@ -49,7 +50,7 @@ Future<Response> _createList(RequestContext context) async {
         'messages': {'code': 1, 'message': 'This email is Already exist'},
       });
     }
-    final password = body['password'] as String;
+
     if (!validator.isValidPassword(password)) {
       return Response.json(body: {
         'messages': {'code': 1, 'message': 'Invalid Format Password'},
