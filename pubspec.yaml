@@ -1,0 +1,27 @@
+name: myapi
+description: An new Dart Frog application
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  bcrypt: ^1.1.3
+  crypto: ^3.0.3
+  dart_frog: ^1.0.0
+  dart_jsonwebtoken: ^2.14.0
+  dartssh2: ^2.8.2
+  flutter_dotenv: ^5.1.0
+  jwt_decoder: ^2.0.1
+  mongo_dart: ^0.9.4
+  process_run: ^0.14.2
+  shelf: ^1.4.1
+  shelf_secure_cookie: ^1.3.0
+
+dev_dependencies:
+  mocktail: ^1.0.0
+  test: ^1.19.2
+  very_good_analysis: ^5.1.0
+assets:
+  - .env
