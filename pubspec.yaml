@@ -25,3 +25,6 @@ dev_dependencies:
   very_good_analysis: ^5.1.0
 assets:
   - .env
+  
+scripts:
+  dev: dart lib/main.dart
